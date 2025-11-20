@@ -19,6 +19,16 @@ export default function RatingsTable({ students, subjects }: RatingsTableProps) 
   const [sortBy, setSortBy] = useState<SortField>('class')
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
 
+  // Debug: Teacher bilgilerini kontrol et
+  console.log('Students with ratings:', students.map(s => ({
+    name: `${s.first_name} ${s.last_name}`,
+    ratings: s.ratings?.map((r: any) => ({
+      teacher_name: r.teacher?.full_name,
+      has_teacher: !!r.teacher,
+      comment: r.comment?.substring(0, 20)
+    }))
+  })))
+
   // Sıralama başlığına tıklama
   const handleSort = (field: SortField) => {
     if (sortBy === field) {
@@ -34,9 +44,9 @@ export default function RatingsTable({ students, subjects }: RatingsTableProps) 
   // Arama ve filtreleme
   const filteredStudents = useMemo(() => {
     let result = students.filter(student => {
-      const fullName = `${student.first_name} ${student.last_name}`.toLowerCase()
-      const matchesSearch = fullName.includes(searchTerm.toLowerCase()) || 
-                           student.student_number?.toLowerCase().includes(searchTerm.toLowerCase())
+      const fullName = `${student.first_name} ${student.last_name}`.toLocaleLowerCase('tr')
+      const matchesSearch = fullName.includes(searchTerm.toLocaleLowerCase('tr')) || 
+                           student.student_number?.toLocaleLowerCase('tr').includes(searchTerm.toLocaleLowerCase('tr'))
       
       // BİLSEM filtresi - öğrencinin BİLSEM değerlendirmesi var mı kontrol et
       if (showBilsemOnly) {
