@@ -1,17 +1,7 @@
--- Migration: Set role for existing users based on teachers table
--- This will set user_metadata.role = 'teacher' for all users in teachers table
-
--- Note: This requires direct database access
--- You need to run this in Supabase SQL Editor
-
--- Update all users who are in teachers table
-UPDATE auth.users
-SET raw_user_meta_data = 
-  CASE 
-    WHEN raw_user_meta_data IS NULL THEN '{"role": "teacher"}'::jsonb
-    ELSE raw_user_meta_data || '{"role": "teacher"}'::jsonb
-  END
-WHERE id IN (SELECT user_id FROM public.teachers)
-AND (raw_user_meta_data->>'role' IS NULL OR raw_user_meta_data->>'role' != 'superadmin');
-
--- Note: We exclude superadmin to not override existing superadmin role
+SUPABASE_SERVICE_ROLE_KEY=<buraya_service_role_key_yapıştır>NEXT_PUBLIC_SUPABASE_URL=https://sup-ogrencim.edu-ai.online
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTc2Mzc1OTg4MCwiZXhwIjo0OTE5NDMzNDgwLCJyb2xlIjoiYW5vbiJ9._0IxRpyumx4lNF7WEMMaV_PT5V3V8S8Od4mXkjRMwJs
+SUPABASE_SERVICE_ROLE_KEY=Name: NEXT_PUBLIC_SUPABASE_URL
+Value: https://sup-ogrencim.edu-ai.online
+☐ Is Preview
+☑ Is Build Time  ← ✅ MUTLAKA İŞARETLE!
+[Save]

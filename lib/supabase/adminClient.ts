@@ -1,14 +1,22 @@
 import { createClient } from '@supabase/supabase-js'
 
-const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+let supabaseAdminInstance: ReturnType<typeof createClient> | null = null
 
-if (!url || !serviceRoleKey) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment')
-}
+export const supabaseAdmin = (() => {
+  if (!supabaseAdminInstance) {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-export const supabaseAdmin = createClient(url, serviceRoleKey, {
-  auth: { persistSession: false },
-})
+    if (!url || !serviceRoleKey) {
+      throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment')
+    }
+
+    supabaseAdminInstance = createClient(url, serviceRoleKey, {
+      auth: { persistSession: false },
+    })
+  }
+  
+  return supabaseAdminInstance
+})()
 
 export default supabaseAdmin
