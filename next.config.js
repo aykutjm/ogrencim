@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone', // Docker için gerekli
+  // output: 'standalone', // Devre dışı - Coolify ile sorun çıkarıyor
   experimental: {
     serverActions: {
       bodySizeLimit: '2mb',
