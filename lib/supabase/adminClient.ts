@@ -1,8 +1,8 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-let supabaseAdminInstance: ReturnType<typeof createClient> | null = null
+let supabaseAdminInstance: SupabaseClient | null = null
 
-export const supabaseAdmin = (() => {
+export function getSupabaseAdmin(): SupabaseClient {
   if (!supabaseAdminInstance) {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -17,6 +17,14 @@ export const supabaseAdmin = (() => {
   }
   
   return supabaseAdminInstance
-})()
+}
+
+// Backward compatibility
+export const supabaseAdmin = new Proxy({} as SupabaseClient, {
+  get: (target, prop) => {
+    const admin = getSupabaseAdmin()
+    return (admin as any)[prop]
+  }
+})
 
 export default supabaseAdmin
