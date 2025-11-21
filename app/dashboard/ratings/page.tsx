@@ -40,8 +40,8 @@ export default async function RatingsPage() {
         created_at,
         is_bilsem_rating,
         bilsem_subject,
-        subject:subjects(id, name),
-        teacher:teachers(full_name)
+        subjects(id, name),
+        teachers(id, full_name, email)
       )
     `)
     .order('first_name')
@@ -49,6 +49,27 @@ export default async function RatingsPage() {
   if (studentsError) {
     console.error('Students error:', studentsError)
   }
+
+  console.log('RAW students data:', JSON.stringify(students?.[0]?.ratings?.[0], null, 2))
+
+  // Transform: teachers ve subjects object/array'lerini single object'e çevir
+  const transformedStudents = students?.map(student => ({
+    ...student,
+    ratings: student.ratings?.map((rating: any) => ({
+      ...rating,
+      // Embedded query bazen object bazen array döner
+      teacher: rating.teachers 
+        ? (Array.isArray(rating.teachers) ? rating.teachers[0] : rating.teachers)
+        : null,
+      subject: rating.subjects
+        ? (Array.isArray(rating.subjects) ? rating.subjects[0] : rating.subjects)
+        : null,
+      teachers: undefined,
+      subjects: undefined
+    }))
+  }))
+  
+  console.log('TRANSFORMED rating:', JSON.stringify(transformedStudents?.[0]?.ratings?.[0], null, 2))
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
@@ -73,7 +94,7 @@ export default async function RatingsPage() {
         </div>
 
         <RatingsTable 
-          students={students || []} 
+          students={transformedStudents || []} 
           subjects={subjects || []} 
         />
       </div>

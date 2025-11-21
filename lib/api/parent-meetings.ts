@@ -7,14 +7,24 @@ export async function getParentMeetingsByStudent(studentId: string) {
     .from('parent_meetings')
     .select(`
       *,
-      teacher:teachers(full_name),
-      student:students(first_name, last_name)
+      teachers(id, full_name, email),
+      students(first_name, last_name)
     `)
     .eq('student_id', studentId)
     .order('meeting_date', { ascending: false })
 
   if (error) throw error
-  return data as ParentMeeting[]
+  
+  // Transform
+  const transformed = data?.map(item => ({
+    ...item,
+    teacher: Array.isArray(item.teachers) && item.teachers.length > 0 ? item.teachers[0] : null,
+    student: Array.isArray(item.students) && item.students.length > 0 ? item.students[0] : null,
+    teachers: undefined,
+    students: undefined
+  }))
+  
+  return transformed as unknown as ParentMeeting[]
 }
 
 export async function getParentMeetingById(id: string) {
@@ -23,14 +33,24 @@ export async function getParentMeetingById(id: string) {
     .from('parent_meetings')
     .select(`
       *,
-      teacher:teachers(full_name),
-      student:students(first_name, last_name)
+      teachers(id, full_name, email),
+      students(first_name, last_name)
     `)
     .eq('id', id)
     .single()
 
   if (error) throw error
-  return data as ParentMeeting
+  
+  // Transform
+  const transformed = {
+    ...data,
+    teacher: Array.isArray(data.teachers) && data.teachers.length > 0 ? data.teachers[0] : null,
+    student: Array.isArray(data.students) && data.students.length > 0 ? data.students[0] : null,
+    teachers: undefined,
+    students: undefined
+  }
+  
+  return transformed as unknown as ParentMeeting
 }
 
 export async function createParentMeeting(meeting: {

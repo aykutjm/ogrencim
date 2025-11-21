@@ -1,11 +1,35 @@
+export interface Institution {
+  id: string
+  name: string
+  address?: string
+  phone?: string
+  email?: string
+  logo_url?: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type UserRole = 'superadmin' | 'admin' | 'teacher' | 'parent'
+
+export interface Role {
+  id: string
+  name: UserRole
+  description?: string
+  created_at: string
+}
+
 export interface Teacher {
   id: string
   user_id: string
   full_name: string
   email: string
   subject_id?: string
+  institution_id?: string
   created_at: string
   updated_at: string
+  // Relations
+  institution?: Institution
 }
 
 export interface Parent {
@@ -18,8 +42,11 @@ export interface Parent {
   mother_phone?: string
   father_name?: string
   father_phone?: string
+  institution_id?: string
   created_at: string
   updated_at: string
+  // Relations
+  institution?: Institution
 }
 
 export interface Class {
@@ -27,16 +54,22 @@ export interface Class {
   name: string
   grade_level?: number
   academic_year?: string
+  institution_id?: string
   created_at: string
   updated_at: string
+  // Relations
+  institution?: Institution
 }
 
 export interface Subject {
   id: string
   name: string
   description?: string
+  institution_id?: string
   created_at: string
   updated_at: string
+  // Relations
+  institution?: Institution
 }
 
 export interface Student {
@@ -47,11 +80,13 @@ export interface Student {
   class_id?: string
   parent_id?: string
   date_of_birth?: string
+  institution_id?: string
   created_at: string
   updated_at: string
   // Relations
   class?: Class
   parent?: Parent
+  institution?: Institution
 }
 
 export interface SkillRating {
@@ -98,5 +133,3 @@ export interface ParentMeeting {
   student?: Student
   teacher?: Teacher
 }
-
-export type UserRole = 'teacher' | 'parent' | 'admin'

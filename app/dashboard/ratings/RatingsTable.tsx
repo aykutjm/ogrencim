@@ -19,16 +19,6 @@ export default function RatingsTable({ students, subjects }: RatingsTableProps) 
   const [sortBy, setSortBy] = useState<SortField>('class')
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
 
-  // Debug: Teacher bilgilerini kontrol et
-  console.log('Students with ratings:', students.map(s => ({
-    name: `${s.first_name} ${s.last_name}`,
-    ratings: s.ratings?.map((r: any) => ({
-      teacher_name: r.teacher?.full_name,
-      has_teacher: !!r.teacher,
-      comment: r.comment?.substring(0, 20)
-    }))
-  })))
-
   // Sıralama başlığına tıklama
   const handleSort = (field: SortField) => {
     if (sortBy === field) {

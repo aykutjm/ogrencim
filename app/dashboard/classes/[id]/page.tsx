@@ -41,21 +41,30 @@ export default async function ClassDetailPage({
           .from('skill_ratings')
           .select(`
             *,
-            subject:subjects(name),
-            teacher:teachers(full_name)
+            subjects(name),
+            teachers(id, full_name, email)
           `)
           .eq('student_id', student.id)
           .eq('visibility', true)
           .order('created_at', { ascending: false })
+        
+        // Transform
+        const transformedRatings = ratings?.map(r => ({
+          ...r,
+          teacher: Array.isArray(r.teachers) && r.teachers.length > 0 ? r.teachers[0] : null,
+          subject: Array.isArray(r.subjects) && r.subjects.length > 0 ? r.subjects[0] : null,
+          teachers: undefined,
+          subjects: undefined
+        }))
 
         // En yüksek puanlı branşı bul
         let topSkill = null
         let topRating = 0
 
-        if (ratings && ratings.length > 0) {
+        if (transformedRatings && transformedRatings.length > 0) {
           const avgBySubject: Record<string, { sum: number; count: number }> = {}
           
-          ratings.forEach((r: any) => {
+          transformedRatings.forEach((r: any) => {
             const subjectName = r.subject?.name || 'Diğer'
             if (!avgBySubject[subjectName]) {
               avgBySubject[subjectName] = { sum: 0, count: 0 }
@@ -74,7 +83,7 @@ export default async function ClassDetailPage({
         }
 
         // Branş bazlı gruplama
-        const ratingsBySubject = (ratings || []).reduce((acc: any, rating: any) => {
+        const ratingsBySubject = (transformedRatings || []).reduce((acc: any, rating: any) => {
           const subjectName = rating.subject?.name || 'Diğer'
           if (!acc[subjectName]) {
             acc[subjectName] = []
@@ -85,7 +94,7 @@ export default async function ClassDetailPage({
 
         return {
           ...student,
-          topSkill,
+          ratings: transformedRatings,
           topRating,
           totalRatings: ratings?.length || 0,
           ratingsBySubject,

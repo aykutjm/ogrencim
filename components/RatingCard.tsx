@@ -21,6 +21,17 @@ interface RatingCardProps {
 }
 
 export default function RatingCard({ rating, onDelete, onUpdate }: RatingCardProps) {
+  // DEBUG
+  console.log('RatingCard rating:', {
+    id: rating.id,
+    comment: rating.comment?.substring(0, 30),
+    teacher: rating.teacher,
+    teacher_full_name: rating.teacher?.full_name,
+    has_teacher: !!rating.teacher,
+    rating_keys: Object.keys(rating),
+    teacher_keys: rating.teacher ? Object.keys(rating.teacher) : null
+  })
+  
   const [isEditing, setIsEditing] = useState(false)
   const [editRating, setEditRating] = useState(rating.rating)
   const [editComment, setEditComment] = useState(rating.comment || '')

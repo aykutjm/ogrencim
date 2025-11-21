@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import DashboardNav from '@/components/DashboardNav'
+import { getCurrentUserRole } from '@/lib/auth/roles'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -11,7 +12,18 @@ export default async function DashboardPage() {
     redirect('/auth/login')
   }
 
-  const userRole = user.user_metadata?.role || 'teacher'
+  const userRole = await getCurrentUserRole()
+  
+  // Superadmin ise superadmin dashboard'a yönlendir
+  if (userRole === 'superadmin') {
+    redirect('/dashboard/superadmin')
+  }
+  
+  // Admin ise admin dashboard'a yönlendir
+  if (userRole === 'admin') {
+    redirect('/dashboard/admin')
+  }
+
   const userName = user.user_metadata?.full_name || user.email
 
   return (

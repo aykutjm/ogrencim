@@ -43,15 +43,24 @@ export default async function MyChildrenPage() {
           .from('skill_ratings')
           .select(`
             *,
-            teacher:teachers(full_name),
-            subject:subjects(name)
+            teachers(id, full_name, email),
+            subjects(name)
           `)
           .eq('student_id', child.id)
           .eq('visibility', true)
+        
+        // Transform
+        const transformedRatings = ratings?.map(r => ({
+          ...r,
+          teacher: Array.isArray(r.teachers) && r.teachers.length > 0 ? r.teachers[0] : null,
+          subject: Array.isArray(r.subjects) && r.subjects.length > 0 ? r.subjects[0] : null,
+          teachers: undefined,
+          subjects: undefined
+        }))
 
         return {
           ...child,
-          ratings: ratings || [],
+          ratings: transformedRatings || [],
         }
       })
     )
