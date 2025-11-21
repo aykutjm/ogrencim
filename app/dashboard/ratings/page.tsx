@@ -73,7 +73,7 @@ export default async function RatingsPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
-      <DashboardNav showBackButton />
+      <DashboardNav showBackButton userRole={userRole} />
 
       <div className="max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 md:py-8">
         {/* Modern Başlık */}

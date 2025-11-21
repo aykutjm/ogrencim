@@ -1,14 +1,14 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { getCurrentUserRole } from '@/lib/auth/roles'
 import LogoutButton from './LogoutButton'
+import { UserRole } from '@/lib/types'
 
 interface DashboardNavProps {
   showBackButton?: boolean
+  userRole?: UserRole | null
 }
 
-export default async function DashboardNav({ showBackButton = false }: DashboardNavProps) {
-  const userRole = await getCurrentUserRole()
+export default function DashboardNav({ showBackButton = false, userRole = null }: DashboardNavProps) {
   
   return (
     <nav className="bg-white/80 backdrop-blur-md shadow-lg border-b-4 border-gradient-to-r from-blue-600 to-purple-600 sticky top-0 z-50">
