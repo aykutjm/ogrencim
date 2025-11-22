@@ -7,25 +7,8 @@ export async function createClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  // Keys kontrolü
-  if (!supabaseUrl || !supabaseKey || 
-      supabaseUrl === 'your-project-url-here' || 
-      supabaseKey === 'your-anon-key-here') {
-    console.error('⚠️  SUPABASE YAPILANDIRMA HATASI!')
-    console.error('📋 .env.local dosyasını düzenleyin')
-    
-    // Geçici placeholder
-    return createServerClient(
-      'https://placeholder.supabase.co',
-      'placeholder-key',
-      {
-        cookies: {
-          get(name: string) { return undefined },
-          set(name: string, value: string, options: CookieOptions) {},
-          remove(name: string, options: CookieOptions) {},
-        },
-      }
-    )
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY')
   }
 
   return createServerClient(
